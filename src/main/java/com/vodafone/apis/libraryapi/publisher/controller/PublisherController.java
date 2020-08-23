@@ -16,16 +16,22 @@ public class PublisherController {
     private PublshierService publshierService;
 
     @GetMapping(path = "/{publisherId}")
-    public Publisher getPublisher(@PathVariable Integer publisherId) {
-        return new Publisher(publisherId, "Hanan", "hanan.ayman.said@gmail.com", "01017923959");
+    public ResponseEntity getPublisher(@PathVariable Integer publisherId) {
+        Publisher publisher = null;
+        try {
+            publisher = publshierService.getPublisher(publisherId);
+        } catch (LibraryResourceAlreadyExistException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(publisher, HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity addPublisher(@RequestBody Publisher publisher) {
         try {
-            publisher = publshierService.addPublisher(publisher);
+            publshierService.addPublisher(publisher);
         } catch (LibraryResourceAlreadyExistException e) {
-            e.printStackTrace();
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
         return new ResponseEntity<>(publisher, HttpStatus.CREATED);
     }
