@@ -2,6 +2,7 @@ package com.vodafone.apis.libraryapi.publisher.service;
 
 import com.vodafone.apis.libraryapi.publisher.entity.PublisherEntity;
 import com.vodafone.apis.libraryapi.publisher.exception.LibraryResourceAlreadyExistException;
+import com.vodafone.apis.libraryapi.publisher.exception.LibraryResourceNotFoundException;
 import com.vodafone.apis.libraryapi.publisher.model.Publisher;
 import com.vodafone.apis.libraryapi.publisher.repository.PublisherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,25 @@ public class PublshierService {
                 throw new LibraryResourceAlreadyExistException("Publisher Not Found  !!");
             }
         return publisher;
+    }
+
+    public void updatePublisher(Integer publisherId, Publisher newPublisher) throws LibraryResourceNotFoundException {
+        newPublisher.setPublisherId(publisherId);
+        Optional<PublisherEntity> oldpublisher = publisherRepository.findById(publisherId);
+        PublisherEntity publisherWillBeSaved = oldpublisher.get();
+        //The Update is optional only for Email or PhoneNumber
+        if (oldpublisher.isPresent()){ //update
+            if (newPublisher.getEmailId() != null) {
+                publisherWillBeSaved.setEmailId(newPublisher.getEmailId());
+            }
+            if (newPublisher.getPhoneNumber() != null) {
+                publisherWillBeSaved.setPhoneNumber(newPublisher.getPhoneNumber());
+            }
+            publisherRepository.save(publisherWillBeSaved);
+        }else{
+            throw new LibraryResourceNotFoundException("Publisher Not found !!");
+        }
+
     }
 
     private Publisher createModelFromEntity(Optional<PublisherEntity> publisherEntity) {

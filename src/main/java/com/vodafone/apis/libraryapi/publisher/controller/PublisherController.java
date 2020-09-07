@@ -1,6 +1,7 @@
 package com.vodafone.apis.libraryapi.publisher.controller;
 
 import com.vodafone.apis.libraryapi.publisher.exception.LibraryResourceAlreadyExistException;
+import com.vodafone.apis.libraryapi.publisher.exception.LibraryResourceNotFoundException;
 import com.vodafone.apis.libraryapi.publisher.model.Publisher;
 import com.vodafone.apis.libraryapi.publisher.service.PublshierService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +16,11 @@ public class PublisherController {
     @Autowired
     private PublshierService publshierService;
 
+    Publisher publisher = null;
+
     @GetMapping(path = "/{publisherId}")
     public ResponseEntity getPublisher(@PathVariable Integer publisherId) {
-        Publisher publisher = null;
+
         try {
             publisher = publshierService.getPublisher(publisherId);
         } catch (LibraryResourceAlreadyExistException e) {
@@ -34,5 +37,13 @@ public class PublisherController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
         return new ResponseEntity<>(publisher, HttpStatus.CREATED);
+    }
+
+    //TODO: Update the method of mapping to be Patch instead of Put , partial update
+    @PutMapping(path = "/{publisherId}")
+    public ResponseEntity updatePublisher(@PathVariable Integer publisherId , @RequestBody Publisher newPublisher) throws LibraryResourceNotFoundException {
+     publshierService.updatePublisher(publisherId , newPublisher);
+     return  new ResponseEntity<>(publisher , HttpStatus.NO_CONTENT);
+
     }
 }
