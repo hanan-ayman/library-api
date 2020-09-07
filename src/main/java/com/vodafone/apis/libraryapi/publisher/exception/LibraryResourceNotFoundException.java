@@ -2,13 +2,15 @@ package com.vodafone.apis.libraryapi.publisher.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class LibraryResourceAlreadyExistException extends ApiBasexception {
+public class LibraryResourceNotFoundException extends ApiBasexception {
     HttpStatus status;
-    public LibraryResourceAlreadyExistException(String message) {
+
+    public LibraryResourceNotFoundException(String message) {
         super(message);
     }
 
     public HttpStatus getStatus() {
-        return HttpStatus.CONFLICT;
+        return HttpStatus.NOT_FOUND
+                ;
     }
 }
