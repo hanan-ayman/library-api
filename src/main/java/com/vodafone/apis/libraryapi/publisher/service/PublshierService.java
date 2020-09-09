@@ -33,12 +33,12 @@ public class PublshierService {
 
     public Publisher getPublisher(Integer publisherId) throws LibraryResourceAlreadyExistException {
         Publisher publisher = null;
-            Optional<PublisherEntity> publisherEntity = publisherRepository.findById(publisherId);
-            if(publisherEntity.isPresent()){
-                publisher = createModelFromEntity(publisherEntity);
-            } else {
-                throw new LibraryResourceAlreadyExistException("Publisher Not Found  !!");
-            }
+        Optional<PublisherEntity> publisherEntity = publisherRepository.findById(publisherId);
+        if (publisherEntity.isPresent()) {
+            publisher = createModelFromEntity(publisherEntity);
+        } else {
+            throw new LibraryResourceAlreadyExistException("Publisher Not Found  !!");
+        }
         return publisher;
     }
 
@@ -47,7 +47,7 @@ public class PublshierService {
         Optional<PublisherEntity> oldpublisher = publisherRepository.findById(publisherId);
         PublisherEntity publisherWillBeSaved = oldpublisher.get();
         //The Update is optional only for Email or PhoneNumber
-        if (oldpublisher.isPresent()){ //update
+        if (oldpublisher.isPresent()) { //update
             if (newPublisher.getEmailId() != null) {
                 publisherWillBeSaved.setEmailId(newPublisher.getEmailId());
             }
@@ -55,7 +55,7 @@ public class PublshierService {
                 publisherWillBeSaved.setPhoneNumber(newPublisher.getPhoneNumber());
             }
             publisherRepository.save(publisherWillBeSaved);
-        }else{
+        } else {
             throw new LibraryResourceNotFoundException("Publisher Not found !!");
         }
 
