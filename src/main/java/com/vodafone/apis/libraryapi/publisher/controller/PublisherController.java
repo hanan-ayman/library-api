@@ -26,7 +26,7 @@ public class PublisherController {
 
     @PostMapping
     public ResponseEntity addPublisher(@RequestBody Publisher publisher) throws LibraryResourceAlreadyExistException {
-        publshierService.addPublisher(publisher);
+        publshierService.addPublisher(publisher); // How the id added after save ?!
         return new ResponseEntity<>(publisher, HttpStatus.CREATED);
     }
 
@@ -35,5 +35,10 @@ public class PublisherController {
     public ResponseEntity updatePublisher(@PathVariable Integer publisherId, @RequestBody Publisher newPublisher) throws LibraryResourceNotFoundException {
         publshierService.updatePublisher(publisherId, newPublisher);
         return new ResponseEntity<>(publisher, HttpStatus.NO_CONTENT);
+    }
+    @PatchMapping
+    public ResponseEntity updatePublisherUsingPatch(@RequestBody Publisher updatedPubisher){
+        
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

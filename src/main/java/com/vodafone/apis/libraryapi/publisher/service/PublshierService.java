@@ -44,10 +44,10 @@ public class PublshierService {
 
     public void updatePublisher(Integer publisherId, Publisher newPublisher) throws LibraryResourceNotFoundException {
         newPublisher.setPublisherId(publisherId);
-        Optional<PublisherEntity> oldpublisher = publisherRepository.findById(publisherId);
-        PublisherEntity publisherWillBeSaved = oldpublisher.get();
+        Optional<PublisherEntity> oldPublisher = publisherRepository.findById(publisherId);
+        PublisherEntity publisherWillBeSaved = oldPublisher.get();
         //The Update is optional only for Email or PhoneNumber
-        if (oldpublisher.isPresent()) { //update
+        if (oldPublisher.isPresent()) { //update
             if (newPublisher.getEmailId() != null) {
                 publisherWillBeSaved.setEmailId(newPublisher.getEmailId());
             }
