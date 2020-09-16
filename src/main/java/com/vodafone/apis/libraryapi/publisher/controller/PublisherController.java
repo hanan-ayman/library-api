@@ -22,9 +22,9 @@ public class PublisherController {
     Publisher publisher = null;
 
     @GetMapping(path = "/{publisherId}")
-    public ResponseEntity getPublisher(@PathVariable Integer publisherId
-                                       //,@RequestHeader(value = "trace-id", defaultValue = "") String traceId)
-    )throws LibraryResourceNotFoundException {
+    public ResponseEntity getPublisher(@PathVariable Integer publisherId) throws LibraryResourceNotFoundException {
+
+        //,@RequestHeader(value = "trace-id", defaultValue = "") String traceId)
         publisher = publshierService.getPublisher(publisherId);
         //we can add trace-id to be taken in request-header , to trace your request
 //        if (traceId.isEmpty())
