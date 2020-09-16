@@ -9,10 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
-public class PublshierService {
+public class PublisherService {
     @Autowired
     private PublisherRepository publisherRepository;
 
@@ -31,13 +32,13 @@ public class PublshierService {
         publisherTobeAdded.setPublisherId(addedPublisher.getPublisherId());
     }
 
-    public Publisher getPublisher(Integer publisherId) throws LibraryResourceAlreadyExistException {
+    public Publisher getPublisher(Integer publisherId) throws LibraryResourceNotFoundException {
         Publisher publisher = null;
         Optional<PublisherEntity> publisherEntity = publisherRepository.findById(publisherId);
         if (publisherEntity.isPresent()) {
             publisher = createModelFromEntity(publisherEntity);
         } else {
-            throw new LibraryResourceAlreadyExistException("Publisher Not Found  !!");
+            throw new LibraryResourceNotFoundException("Publisher Not Found  !!");
         }
         return publisher;
     }
@@ -47,7 +48,7 @@ public class PublshierService {
         Optional<PublisherEntity> oldPublisher = publisherRepository.findById(publisherId);
         PublisherEntity publisherWillBeSaved = oldPublisher.get();
         //The Update is optional only for Email or PhoneNumber
-        if (oldPublisher.isPresent()) { //update
+        if (oldPublisher.isPresent()) {
             if (newPublisher.getEmailId() != null) {
                 publisherWillBeSaved.setEmailId(newPublisher.getEmailId());
             }
@@ -61,7 +62,36 @@ public class PublshierService {
 
     }
 
+    public void deletePublisher(Integer publisherId) throws LibraryResourceNotFoundException {
+        Optional<PublisherEntity> publisher = publisherRepository.findById(publisherId);
+        if (publisher.isPresent()) {
+            publisherRepository.deleteById(publisherId);
+        } else {
+            throw new LibraryResourceNotFoundException("Publisher Not found !!");
+        }
+    }
+
+    public List<Publisher> searchPublisher(String name) throws LibraryResourceNotFoundException {
+        List<PublisherEntity> publishersEntities = null;
+        publishersEntities = publisherRepository.findByNameContaining(name);
+        if (publishersEntities.isEmpty()) {
+            throw new LibraryResourceNotFoundException("Publishers Not Found !");
+        }
+        return createModelsFromEntities(publishersEntities);
+
+    }
+
     private Publisher createModelFromEntity(Optional<PublisherEntity> publisherEntity) {
         return new Publisher(publisherEntity.get().getPublisherId(), publisherEntity.get().getName(), publisherEntity.get().getEmailId(), publisherEntity.get().getPhoneNumber());
+    }
+
+    private List<Publisher> createModelsFromEntities(List<PublisherEntity> publishersEntities) {
+        List<Publisher> publishers = new ArrayList<Publisher>();
+        for (int i = 0; i < publishersEntities.size(); i++) {
+            publishers.add(createModelFromEntity(Optional.ofNullable(publishersEntities.get(i))));
+        }
+        return publishers;
+//        return publishersEntities.stream().map(pe -> createModelFromEntity(Optional.ofNullable(pe))).collect(Collectors.toList());
+
     }
 }
