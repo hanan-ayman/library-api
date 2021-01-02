@@ -1,19 +1,22 @@
 package com.vodafone.apis.libraryapi.publisher.service;
 
+import com.vodafone.apis.libraryapi.publisher.controller.PublisherController;
 import com.vodafone.apis.libraryapi.publisher.entity.PublisherEntity;
 import com.vodafone.apis.libraryapi.publisher.exception.LibraryResourceAlreadyExistException;
 import com.vodafone.apis.libraryapi.publisher.exception.LibraryResourceNotFoundException;
 import com.vodafone.apis.libraryapi.publisher.model.Publisher;
 import com.vodafone.apis.libraryapi.publisher.repository.PublisherRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class PublisherService {
+    static Logger log = LoggerFactory.getLogger(PublisherService.class);
     @Autowired
     private PublisherRepository publisherRepository;
 
@@ -27,17 +30,19 @@ public class PublisherService {
         try {
             addedPublisher = publisherRepository.save(publisherEntity);
         } catch (DataIntegrityViolationException exception) {
+            log.error("Publisher Already exist with name {} " , publisherTobeAdded.getName());
             throw new LibraryResourceAlreadyExistException("Publisher Already exist !!");
         }
         publisherTobeAdded.setPublisherId(addedPublisher.getPublisherId());
     }
 
     public Publisher getPublisher(Integer publisherId) throws LibraryResourceNotFoundException {
-        Publisher publisher = null;
+        Publisher publisher;
         Optional<PublisherEntity> publisherEntity = publisherRepository.findById(publisherId);
         if (publisherEntity.isPresent()) {
             publisher = createModelFromEntity(publisherEntity);
         } else {
+            log.error("Publisher Not Found for id {} " , publisherId);
             throw new LibraryResourceNotFoundException("Publisher Not Found  !!");
         }
         return publisher;
@@ -57,6 +62,7 @@ public class PublisherService {
             }
             publisherRepository.save(publisherWillBeSaved);
         } else {
+            log.error("Publisher Not Found for id {} " , publisherId);
             throw new LibraryResourceNotFoundException("Publisher Not found !!");
         }
 
@@ -67,6 +73,7 @@ public class PublisherService {
         if (publisher.isPresent()) {
             publisherRepository.deleteById(publisherId);
         } else {
+            log.error("Publisher Not Found for publisher id {} " , publisherId);
             throw new LibraryResourceNotFoundException("Publisher Not found !!");
         }
     }
@@ -75,6 +82,7 @@ public class PublisherService {
         List<PublisherEntity> publishersEntities = null;
         publishersEntities = publisherRepository.findByNameContaining(name);
         if (publishersEntities.isEmpty()) {
+            log.error("Publisher Not Found for publisher name {} " , name);
             throw new LibraryResourceNotFoundException("Publishers Not Found !");
         }
         return createModelsFromEntities(publishersEntities);

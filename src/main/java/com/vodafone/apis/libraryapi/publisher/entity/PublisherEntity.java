@@ -1,11 +1,13 @@
 package com.vodafone.apis.libraryapi.publisher.entity;
 
+import lombok.Data;
 import org.hibernate.annotations.GeneratorType;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "publisher")
+@Data
 public class PublisherEntity {
 
     @Column(name = "Publisher_Id")
@@ -32,35 +34,4 @@ public class PublisherEntity {
         this.phoneNumber = phoneNumber;
     }
 
-    public int getPublisherId() {
-        return publisherId;
-    }
-
-    public void setPublisherId(int publisherId) {
-        this.publisherId = publisherId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmailId() {
-        return emailId;
-    }
-
-    public void setEmailId(String emailId) {
-        this.emailId = emailId;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
 }
