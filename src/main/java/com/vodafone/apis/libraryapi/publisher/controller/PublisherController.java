@@ -44,7 +44,7 @@ public class PublisherController {
     @PutMapping(path = "/{publisherId}")
     public ResponseEntity updatePublisher(@PathVariable Integer publisherId, @Valid @RequestBody Publisher newPublisher) throws LibraryResourceNotFoundException {
         publshierService.updatePublisher(publisherId, newPublisher);
-        log.info("the update Publisher with publisherId {} ,  request body : {} " , publisherId ,publisher.toString());
+        log.info("the update Publisher with publisherId {} ,  request body : {} " , publisherId , publisher);
         return new ResponseEntity<>(publisher, HttpStatus.NO_CONTENT);
     }
 

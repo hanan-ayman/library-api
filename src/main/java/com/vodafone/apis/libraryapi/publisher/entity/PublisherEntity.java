@@ -24,14 +24,4 @@ public class PublisherEntity {
 
     @Column(name = "Phone_Number")
     private String phoneNumber;
-
-    public PublisherEntity() {
-    }
-
-    public PublisherEntity(String name, String emailId, String phoneNumber) {
-        this.name = name;
-        this.emailId = emailId;
-        this.phoneNumber = phoneNumber;
-    }
-
 }

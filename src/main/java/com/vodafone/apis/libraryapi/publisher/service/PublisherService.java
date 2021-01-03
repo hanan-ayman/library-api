@@ -17,8 +17,7 @@ import java.util.*;
 @Service
 public class PublisherService {
     static Logger log = LoggerFactory.getLogger(PublisherService.class);
-    @Autowired
-    private PublisherRepository publisherRepository;
+    @Autowired    private PublisherRepository publisherRepository;
 
     public void addPublisher(Publisher publisherTobeAdded) throws LibraryResourceAlreadyExistException {
         PublisherEntity publisherEntity = new PublisherEntity(

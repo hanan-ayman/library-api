@@ -20,24 +20,4 @@ public class Publisher {
     @Pattern(regexp = "//d{3}-//d{3}-//d{3}" , message = "please enter a valid phone number format 111-222-333")
     private String phoneNumber;
 
-    //needed by jakson
-    public Publisher() {
-    }
-
-    public Publisher(Integer publisherId, String name, String emailId, String phoneNumber) {
-        this.publisherId = publisherId;
-        this.name = name;
-        this.emailId = emailId;
-        this.phoneNumber = phoneNumber;
-    }
-
-    @Override
-    public String toString() {
-        return "Publisher{" +
-                "publisherId=" + publisherId +
-                ", name='" + name + '\'' +
-                ", emailId='" + emailId + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                '}';
-    }
 }
