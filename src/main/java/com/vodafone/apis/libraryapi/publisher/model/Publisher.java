@@ -1,12 +1,14 @@
 package com.vodafone.apis.libraryapi.publisher.model;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Publisher {
 
     private Integer publisherId;
@@ -19,5 +21,4 @@ public class Publisher {
 
     @Pattern(regexp = "//d{3}-//d{3}-//d{3}" , message = "please enter a valid phone number format 111-222-333")
     private String phoneNumber;
-
 }

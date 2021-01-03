@@ -16,9 +16,9 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequestMapping(path = "/v1/publishers")
-@Slf4j
 public class PublisherController {
 
 //    static Logger log = LoggerFactory.getLogger(PublisherController.class);
