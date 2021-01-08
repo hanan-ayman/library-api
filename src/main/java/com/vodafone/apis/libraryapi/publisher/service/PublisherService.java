@@ -33,6 +33,8 @@ public class PublisherService {
         } catch (DataIntegrityViolationException exception) {
             log.error("Publisher Already exist with name {} " , publisherTobeAdded.getName());
             throw new LibraryResourceAlreadyExistException("Publisher Already exist !!");
+        } catch (Exception e){
+            log.error("general  {} " , e.getMessage());
         }
         publisherTobeAdded.setPublisherId(addedPublisher.getPublisherId());
     }

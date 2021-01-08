@@ -8,18 +8,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 public class ControllerHandlerException extends ResponseEntityExceptionHandler {
-
     @ExceptionHandler(ApiBasexception.class)
     public ResponseEntity<ErrorDetails> handlerExceptionAPIGeneric(ApiBasexception ex , WebRequest request) {
         ErrorDetails errorDetails = new ErrorDetails(ex.getMessage() , request.getDescription(false));
         return new ResponseEntity<ErrorDetails>(errorDetails , ex.getStatus());
     }
-
-    //Instead of duplicating the code of handleing exaption we create a errorbaseapi
-//    @ExceptionHandler(LibraryResourceNotFoundException.class)
-//    public ResponseEntity<ErrorDetails> handlerExceptionAPIGeneric(LibraryResourceNotFoundException ex , WebRequest request) {
-//        ErrorDetails errorDetails = new ErrorDetails(ex.getMessage() , request.getDescription(false));
-//        return new ResponseEntity<ErrorDetails>(errorDetails , ex.getStatus());
-//    }
-
 }
