@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import java.util.*;
 
 @Slf4j
@@ -25,7 +26,7 @@ import java.util.*;
 public class PublisherService {
 
     final static String PUBLISHER_ADDED_MAIL_SUBJECT = "PUBLISHER ADDED SUCCESSFULLY";
-    final static String PUBLISHER_ADDED_MAIL_BODY = "Dear Customer , congratulation ! your publisher has been added successfully";
+    final static String PUBLISHER_ADDED_MAIL_BODY = "Dear Customer , <b>congratulation</b> ! your publisher has been added successfully";
     @Autowired
     private PublisherRepository publisherRepository;
     @Autowired
@@ -43,9 +44,11 @@ public class PublisherService {
             addedPublisher = publisherRepository.save(publisherEntity);
             mobileService.sendSMS(publisherTobeAdded.getPhoneNumber());
             emailService.sendSimpleMessage(publisherTobeAdded.getEmailId(),PUBLISHER_ADDED_MAIL_SUBJECT,PUBLISHER_ADDED_MAIL_BODY );
-        } catch (DataIntegrityViolationException exception) {
+        } catch (DataIntegrityViolationException e) {
             log.error("Publisher Already exist with name {} " , publisherTobeAdded.getName());
             throw new LibraryResourceAlreadyExistException("Publisher Already exist !!");
+        }catch (MessagingException e){
+            log.error("we could not send your email  {} " , e.getMessage());
         }
         publisherTobeAdded.setPublisherId(addedPublisher.getPublisherId());
     }
