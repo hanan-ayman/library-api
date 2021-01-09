@@ -1,6 +1,11 @@
 package com.vodafone.apis.libraryapi.publisher.service;
 
+import com.twilio.Twilio;
+import com.twilio.rest.api.v2010.account.Message;
+import com.twilio.type.PhoneNumber;
 import com.vodafone.apis.libraryapi.publisher.controller.PublisherController;
+import com.vodafone.apis.libraryapi.publisher.controller.email.EmailService;
+import com.vodafone.apis.libraryapi.publisher.controller.sms.MobileService;
 import com.vodafone.apis.libraryapi.publisher.entity.PublisherEntity;
 import com.vodafone.apis.libraryapi.publisher.exception.LibraryResourceAlreadyExistException;
 import com.vodafone.apis.libraryapi.publisher.exception.LibraryResourceNotFoundException;
@@ -19,8 +24,14 @@ import java.util.*;
 @Service
 public class PublisherService {
 
-    @Autowired    private PublisherRepository publisherRepository;
-
+    final static String PUBLISHER_ADDED_MAIL_SUBJECT = "PUBLISHER ADDED SUCCESSFULLY";
+    final static String PUBLISHER_ADDED_MAIL_BODY = "Dear Customer , congratulation ! your publisher has been added successfully";
+    @Autowired
+    private PublisherRepository publisherRepository;
+    @Autowired
+    private EmailService emailService;
+    @Autowired
+    private MobileService mobileService;
     public void addPublisher(Publisher publisherTobeAdded) throws LibraryResourceAlreadyExistException {
         PublisherEntity publisherEntity = new PublisherEntity(
                 publisherTobeAdded.getName(),
@@ -30,11 +41,11 @@ public class PublisherService {
         PublisherEntity addedPublisher = null;
         try {
             addedPublisher = publisherRepository.save(publisherEntity);
+            mobileService.sendSMS(publisherTobeAdded.getPhoneNumber());
+            emailService.sendSimpleMessage(publisherTobeAdded.getEmailId(),PUBLISHER_ADDED_MAIL_SUBJECT,PUBLISHER_ADDED_MAIL_BODY );
         } catch (DataIntegrityViolationException exception) {
             log.error("Publisher Already exist with name {} " , publisherTobeAdded.getName());
             throw new LibraryResourceAlreadyExistException("Publisher Already exist !!");
-        } catch (Exception e){
-            log.error("general  {} " , e.getMessage());
         }
         publisherTobeAdded.setPublisherId(addedPublisher.getPublisherId());
     }
@@ -103,6 +114,5 @@ public class PublisherService {
         }
         return publishers;
 //        return publishersEntities.stream().map(pe -> createModelFromEntity(Optional.ofNullable(pe))).collect(Collectors.toList());
-
     }
 }

@@ -89,6 +89,12 @@
 			<artifactId>twilio</artifactId>
 			<version>8.5.1</version>
 		</dependency>
+		<!-- send emails -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+			<version>2.2.5.RELEASE</version>
+		</dependency>
 	</dependencies>
 
 	<build>

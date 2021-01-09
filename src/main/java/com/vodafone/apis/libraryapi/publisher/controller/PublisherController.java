@@ -5,17 +5,10 @@ import com.vodafone.apis.libraryapi.publisher.exception.LibraryResourceNotFoundE
 import com.vodafone.apis.libraryapi.publisher.model.Publisher;
 import com.vodafone.apis.libraryapi.publisher.service.PublisherService;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import com.twilio.Twilio;
-import com.twilio.rest.api.v2010.account.Message;
-import com.twilio.type.PhoneNumber;
-
 import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
@@ -26,9 +19,6 @@ import java.util.UUID;
 public class PublisherController {
 
 //    static Logger log = LoggerFactory.getLogger(PublisherController.class);
-    final static String ACCOUNT_SID = "ACe4d8891a3b61ec5534715dee84ba41a1";
-    final static String AUTH_TOKEN =  "d63585f1bff8c424e42a98a43f0bd916";
-    final static String Twilio_Number = "12019480779";
     @Autowired
     private PublisherService publshierService;
     Publisher publisher = null;
@@ -44,17 +34,8 @@ public class PublisherController {
     @PostMapping
     public ResponseEntity addPublisher(@Valid @RequestBody Publisher publisher) throws LibraryResourceAlreadyExistException {
         publshierService.addPublisher(publisher);
-        sendSms(publisher);
         log.info("the add Publisher request : {} " , publisher.toString());
         return new ResponseEntity<>(publisher, HttpStatus.CREATED);
-    }
-
-    private void sendSms(Publisher publisher) {
-        Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
-        Message message = Message.creator(new PhoneNumber(publisher.getPhoneNumber()),
-                new PhoneNumber(Twilio_Number),
-                "Your publisher has been added").create();
-        System.out.println(message.getSid() + message.getStatus());
     }
 
     @PutMapping(path = "/{publisherId}")

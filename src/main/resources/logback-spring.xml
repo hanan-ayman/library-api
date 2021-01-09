@@ -81,7 +81,7 @@
 
     <logger name="org.springframework" level="DEBUG">
         <appender-ref ref="springLog" />
-<!--        <appender-ref ref="console" />-->
+        <appender-ref ref="console" />
     </logger>
 
     <logger name="org.hibernate" level="DEBUG">
