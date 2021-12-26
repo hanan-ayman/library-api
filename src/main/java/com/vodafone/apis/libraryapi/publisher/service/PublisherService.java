@@ -15,7 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
@@ -25,14 +27,14 @@ import java.util.*;
 @Service
 public class PublisherService {
 
-    final static String PUBLISHER_ADDED_MAIL_SUBJECT = "PUBLISHER ADDED SUCCESSFULLY";
-    final static String PUBLISHER_ADDED_MAIL_BODY = "Dear Customer , <b>congratulation</b> ! your publisher has been added successfully";
     @Autowired
     private PublisherRepository publisherRepository;
+
     @Autowired
-    private EmailService emailService;
-    @Autowired
-    private MobileService mobileService;
+    private JmsTemplate jmsTemplate;
+    @Value("${activemq.queue.name}")
+    String destination;
+
     public void addPublisher(Publisher publisherTobeAdded) throws LibraryResourceAlreadyExistException {
         PublisherEntity publisherEntity = new PublisherEntity(
                 publisherTobeAdded.getName(),
@@ -42,13 +44,10 @@ public class PublisherService {
         PublisherEntity addedPublisher = null;
         try {
             addedPublisher = publisherRepository.save(publisherEntity);
-            mobileService.sendSMS(publisherTobeAdded.getPhoneNumber());
-            emailService.sendSimpleMessage(publisherTobeAdded.getEmailId(),PUBLISHER_ADDED_MAIL_SUBJECT,PUBLISHER_ADDED_MAIL_BODY );
+            jmsTemplate.convertAndSend(destination, publisherTobeAdded);
         } catch (DataIntegrityViolationException e) {
             log.error("Publisher Already exist with name {} " , publisherTobeAdded.getName());
             throw new LibraryResourceAlreadyExistException("Publisher Already exist !!");
-        }catch (MessagingException e){
-            log.error("we could not send your email  {} " , e.getMessage());
         }
         publisherTobeAdded.setPublisherId(addedPublisher.getPublisherId());
     }

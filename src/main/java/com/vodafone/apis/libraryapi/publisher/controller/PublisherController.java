@@ -18,7 +18,6 @@ import java.util.UUID;
 @RequestMapping(path = "/v1/publishers")
 public class PublisherController {
 
-//    static Logger log = LoggerFactory.getLogger(PublisherController.class);
     @Autowired
     private PublisherService publshierService;
     Publisher publisher = null;
